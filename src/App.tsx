@@ -11,15 +11,9 @@ function App() {
     <div className={`h-screen w-screen flex flex-col overflow-hidden ${
       isDark ? 'bg-[#000000]' : 'bg-gray-50'
     }`}>
-      {/* Top Toolbar */}
       <Toolbar />
-      
-      {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left: Text Editor */}
         <TextEditor />
-        
-        {/* Right: Mind Map Canvas */}
         <MindMapCanvas />
       </div>
     </div>

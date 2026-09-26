@@ -2,40 +2,28 @@ import { memo, useState } from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 import { useMindMapStore } from '../store/mindmapStore';
 
-// Light theme colors
 const depthColors = [
-  'bg-indigo-600 text-white shadow-indigo-200/50',
-  'bg-violet-500 text-white shadow-violet-200/50',
-  'bg-purple-500 text-white shadow-purple-200/50',
-  'bg-fuchsia-500 text-white shadow-fuchsia-200/50',
-  'bg-pink-500 text-white shadow-pink-200/50',
-  'bg-rose-500 text-white shadow-rose-200/50',
-  'bg-orange-500 text-white shadow-orange-200/50',
-  'bg-amber-500 text-white shadow-amber-200/50',
+  'bg-gray-900 text-white',
+  'bg-gray-700 text-white',
+  'bg-gray-600 text-white',
+  'bg-gray-500 text-white',
+  'bg-gray-400 text-white',
 ];
 
-// iOS Dark theme colors - ใช้สีเข้มแบบ iOS
 const iosDarkDepthColors = [
-  'bg-[#0A84FF] text-white shadow-blue-900/30',
-  'bg-[#5E5CE6] text-white shadow-purple-900/30',
-  'bg-[#BF5AF2] text-white shadow-purple-900/30',
-  'bg-[#FF375F] text-white shadow-pink-900/30',
-  'bg-[#FF453A] text-white shadow-red-900/30',
-  'bg-[#FF9F0A] text-white shadow-orange-900/30',
-  'bg-[#30D158] text-white shadow-green-900/30',
-  'bg-[#64D2FF] text-white shadow-cyan-900/30',
+  'bg-[#0A84FF] text-white',
+  'bg-[#5E5CE6] text-white',
+  'bg-[#BF5AF2] text-white',
+  'bg-[#FF375F] text-white',
+  'bg-[#FF9F0A] text-white',
 ];
 
-// Colorful theme
 const colorfulDepthColors = [
-  'bg-blue-500 text-white shadow-blue-200/50',
-  'bg-emerald-500 text-white shadow-emerald-200/50',
-  'bg-amber-500 text-white shadow-amber-200/50',
-  'bg-rose-500 text-white shadow-rose-200/50',
-  'bg-cyan-500 text-white shadow-cyan-200/50',
-  'bg-lime-500 text-white shadow-lime-200/50',
-  'bg-orange-500 text-white shadow-orange-200/50',
-  'bg-pink-500 text-white shadow-pink-200/50',
+  'bg-blue-600 text-white',
+  'bg-emerald-600 text-white',
+  'bg-amber-600 text-white',
+  'bg-rose-600 text-white',
+  'bg-cyan-600 text-white',
 ];
 
 function CustomNode({ data, id }: NodeProps) {
@@ -59,13 +47,12 @@ function CustomNode({ data, id }: NodeProps) {
 
   const colorClass = colorSet[depth % colorSet.length];
 
-  // iOS-style sizing
   const sizeClass =
     depth === 0
-      ? 'px-7 py-3.5 text-base font-semibold rounded-2xl min-w-[160px]'
+      ? 'px-5 py-2.5 text-sm font-medium rounded-lg min-w-[140px]'
       : depth === 1
-      ? 'px-5 py-2.5 text-sm font-medium rounded-xl min-w-[120px]'
-      : 'px-4 py-2 text-sm font-normal rounded-xl min-w-[80px]';
+      ? 'px-4 py-2 text-sm font-normal rounded-md min-w-[100px]'
+      : 'px-3 py-1.5 text-xs font-normal rounded-md min-w-[70px]';
 
   const handleDoubleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -89,20 +76,15 @@ function CustomNode({ data, id }: NodeProps) {
     }
   };
 
-  // iOS dark mode specific styles
-  const iosDarkStyle = isDark
-    ? 'backdrop-blur-xl bg-opacity-90 border border-white/10 shadow-lg'
-    : 'shadow-lg';
-
   const selectedStyle = isSelected
     ? isDark
-      ? 'ring-2 ring-[#0A84FF] ring-offset-2 ring-offset-[#1C1C1E] scale-105'
-      : 'ring-2 ring-offset-2 ring-indigo-400 scale-105'
+      ? 'ring-2 ring-[#0A84FF] ring-offset-1 ring-offset-[#1C1C1E]'
+      : 'ring-2 ring-gray-900 ring-offset-1'
     : '';
 
   return (
     <div
-      className={`${sizeClass} ${colorClass} ${iosDarkStyle} ${selectedStyle} cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-xl`}
+      className={`${sizeClass} ${colorClass} ${selectedStyle} cursor-pointer transition-all`}
       onClick={() => setSelectedNodeId(id)}
       onDoubleClick={handleDoubleClick}
     >
@@ -118,9 +100,7 @@ function CustomNode({ data, id }: NodeProps) {
           onChange={(e) => setEditText(e.target.value)}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
-          className={`bg-transparent outline-none w-full text-center min-w-[60px] ${
-            isDark ? 'text-white placeholder-white/50' : ''
-          }`}
+          className="bg-transparent outline-none w-full text-center min-w-[60px]"
           onClick={(e) => e.stopPropagation()}
         />
       ) : (

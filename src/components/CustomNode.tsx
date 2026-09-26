@@ -1,5 +1,5 @@
 import { memo, useState } from 'react';
-import { NodeProps } from 'reactflow';
+import { Handle, Position, NodeProps } from 'reactflow';
 import { useMindMapStore } from '../store/mindmapStore';
 
 const depthColors = [
@@ -88,6 +88,11 @@ function CustomNode({ data, id }: NodeProps) {
       onClick={() => setSelectedNodeId(id)}
       onDoubleClick={handleDoubleClick}
     >
+      <Handle
+        type="target"
+        position={Position.Left}
+        className="!w-2 !h-2 !bg-white/50 !border-0"
+      />
       {isEditing ? (
         <input
           autoFocus
@@ -101,6 +106,11 @@ function CustomNode({ data, id }: NodeProps) {
       ) : (
         <span className="whitespace-nowrap">{data.label}</span>
       )}
+      <Handle
+        type="source"
+        position={Position.Right}
+        className="!w-2 !h-2 !bg-white/50 !border-0"
+      />
     </div>
   );
 }

@@ -18,7 +18,6 @@ const nodeTypes: NodeTypes = {
 
 function MindMapInner() {
   const text = useMindMapStore((s) => s.text);
-  const layout = useMindMapStore((s) => s.layout);
   const theme = useMindMapStore((s) => s.theme);
   const setNodes = useMindMapStore((s) => s.setNodes);
   const setEdges = useMindMapStore((s) => s.setEdges);
@@ -28,7 +27,7 @@ function MindMapInner() {
   const isDark = theme === 'dark';
 
   useEffect(() => {
-    const { nodes: newNodes, edges: newEdges } = parseTextToMindMap(text, layout);
+    const { nodes: newNodes, edges: newEdges } = parseTextToMindMap(text);
     
     const edgeColor = isDark ? '#0A84FF' : '#6b7280';
     const themedEdges = newEdges.map(edge => ({
@@ -41,11 +40,11 @@ function MindMapInner() {
     
     setTimeout(() => {
       fitView({ 
-        padding: layout === 'auto' ? 0.15 : 0.2, 
+        padding: 0.15, 
         duration: 300 
       });
     }, 100);
-  }, [text, layout, isDark, setNodes, setEdges, fitView]);
+  }, [text, isDark, setNodes, setEdges, fitView]);
 
   if (storedNodes.length === 0) {
     return (
@@ -71,7 +70,7 @@ function MindMapInner() {
         edges={storedEdges}
         nodeTypes={nodeTypes}
         fitView
-        fitViewOptions={{ padding: layout === 'auto' ? 0.15 : 0.2 }}
+        fitViewOptions={{ padding: 0.15 }}
         minZoom={0.1}
         maxZoom={2}
         proOptions={{ hideAttribution: true }}

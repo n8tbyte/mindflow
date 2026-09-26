@@ -27,7 +27,7 @@ const DEFAULT_TEXT = `My Project
     Feedback`;
 
 // Load from localStorage
-function loadFromStorage(): { text: string; layout: string; theme: string } {
+function loadFromStorage(): { text: string; theme: string } {
   try {
     const saved = localStorage.getItem('mindflow-state');
     if (saved) {
@@ -36,7 +36,7 @@ function loadFromStorage(): { text: string; layout: string; theme: string } {
   } catch (e) {
     // ignore
   }
-  return { text: DEFAULT_TEXT, layout: 'auto', theme: 'default' };
+  return { text: DEFAULT_TEXT, theme: 'default' };
 }
 
 const saved = loadFromStorage();
@@ -46,13 +46,11 @@ interface MindMapState {
   nodes: Node[];
   edges: Edge[];
   selectedNodeId: string | null;
-  layout: 'horizontal' | 'auto';
   theme: 'default' | 'dark' | 'colorful';
   setText: (text: string) => void;
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
   setSelectedNodeId: (id: string | null) => void;
-  setLayout: (layout: 'horizontal' | 'auto') => void;
   setTheme: (theme: 'default' | 'dark' | 'colorful') => void;
   updateNodeText: (id: string, text: string) => void;
 }
@@ -62,7 +60,6 @@ export const useMindMapStore = create<MindMapState>((set, get) => ({
   nodes: [],
   edges: [],
   selectedNodeId: null,
-  layout: (saved.layout as 'horizontal' | 'auto') || 'auto',
   theme: (saved.theme as 'default' | 'dark' | 'colorful') || 'default',
   setText: (text) => {
     set({ text });
@@ -70,7 +67,6 @@ export const useMindMapStore = create<MindMapState>((set, get) => ({
       const state = get();
       localStorage.setItem('mindflow-state', JSON.stringify({
         text,
-        layout: state.layout,
         theme: state.theme,
       }));
     } catch (e) {
@@ -80,26 +76,12 @@ export const useMindMapStore = create<MindMapState>((set, get) => ({
   setNodes: (nodes) => set({ nodes }),
   setEdges: (edges) => set({ edges }),
   setSelectedNodeId: (id) => set({ selectedNodeId: id }),
-  setLayout: (layout) => {
-    set({ layout });
-    try {
-      const state = get();
-      localStorage.setItem('mindflow-state', JSON.stringify({
-        text: state.text,
-        layout,
-        theme: state.theme,
-      }));
-    } catch (e) {
-      // ignore
-    }
-  },
   setTheme: (theme) => {
     set({ theme });
     try {
       const state = get();
       localStorage.setItem('mindflow-state', JSON.stringify({
         text: state.text,
-        layout: state.layout,
         theme,
       }));
     } catch (e) {

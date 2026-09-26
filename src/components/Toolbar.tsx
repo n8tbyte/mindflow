@@ -98,7 +98,7 @@ export default function Toolbar() {
       ctx.fillRect(0, 0, 1920, 1080);
 
       // Calculate scale to fit with padding
-      const padding = 80;
+      const padding = 40;
       const maxW = 1920 - padding * 2;
       const maxH = 1080 - padding * 2;
       const scale = Math.min(maxW / img.width, maxH / img.height, 1);

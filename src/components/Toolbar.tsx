@@ -6,10 +6,13 @@ import { toPng, toSvg } from 'html-to-image';
 export default function Toolbar() {
   const theme = useMindMapStore((s) => s.theme);
   const setTheme = useMindMapStore((s) => s.setTheme);
+  const triggerFitView = useMindMapStore((s) => s.triggerFitView);
   const nodes = useMindMapStore((s) => s.nodes);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const isDark = theme === 'dark';
+
+  const waitForFitView = () => new Promise(resolve => setTimeout(resolve, 150));
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -45,29 +48,86 @@ export default function Toolbar() {
     return () => document.removeEventListener('fullscreenchange', handleFsChange);
   }, []);
 
-  const handleExportPNG = async () => {
-    const reactFlowWrapper = document.querySelector('.react-flow') as HTMLElement;
-    if (!reactFlowWrapper) return;
+  const hideControlsForExport = () => {
+    const controls = document.querySelector('.react-flow__controls') as HTMLElement;
+    const minimap = document.querySelector('.react-flow__minimap') as HTMLElement;
+    if (controls) controls.style.display = 'none';
+    if (minimap) minimap.style.display = 'none';
+  };
+
+  const showControlsAfterExport = () => {
+    const controls = document.querySelector('.react-flow__controls') as HTMLElement;
+    const minimap = document.querySelector('.react-flow__minimap') as HTMLElement;
+    if (controls) controls.style.display = '';
+    if (minimap) minimap.style.display = '';
+  };
+
+  const exportToCanvas = async (): Promise<HTMLCanvasElement | null> => {
+    const viewport = document.querySelector('.react-flow__viewport') as HTMLElement;
+    if (!viewport) return null;
 
     try {
-      const dataUrl = await toPng(reactFlowWrapper, {
-        backgroundColor: isDark ? '#000000' : '#ffffff',
+      triggerFitView();
+      await waitForFitView();
+      hideControlsForExport();
+
+      // Export viewport content
+      const dataUrl = await toPng(viewport, {
+        backgroundColor: 'transparent',
         quality: 1.0,
-        width: 1920,
-        height: 1080,
-        style: {
-          width: '1920px',
-          height: '1080px',
-        },
+        pixelRatio: 2,
       });
-      
-      const link = document.createElement('a');
-      link.download = 'mindmap-1920x1080.png';
-      link.href = dataUrl;
-      link.click();
+
+      // Load image
+      const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = reject;
+        image.src = dataUrl;
+      });
+
+      // Create 1920x1080 canvas
+      const canvas = document.createElement('canvas');
+      canvas.width = 1920;
+      canvas.height = 1080;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+
+      // Fill background
+      ctx.fillStyle = isDark ? '#000000' : '#ffffff';
+      ctx.fillRect(0, 0, 1920, 1080);
+
+      // Calculate scale to fit with padding
+      const padding = 80;
+      const maxW = 1920 - padding * 2;
+      const maxH = 1080 - padding * 2;
+      const scale = Math.min(maxW / img.width, maxH / img.height, 1);
+      const drawW = img.width * scale;
+      const drawH = img.height * scale;
+
+      // Center
+      const x = (1920 - drawW) / 2;
+      const y = (1080 - drawH) / 2;
+
+      ctx.drawImage(img, x, y, drawW, drawH);
+
+      return canvas;
     } catch (err) {
       console.error('Export failed:', err);
+      return null;
+    } finally {
+      showControlsAfterExport();
     }
+  };
+
+  const handleExportPNG = async () => {
+    const canvas = await exportToCanvas();
+    if (!canvas) return;
+
+    const link = document.createElement('a');
+    link.download = 'mindmap-1920x1080.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
   };
 
   const handleExportSVG = async () => {
@@ -75,6 +135,10 @@ export default function Toolbar() {
     if (!reactFlowWrapper) return;
 
     try {
+      triggerFitView();
+      await waitForFitView();
+      hideControlsForExport();
+
       const dataUrl = await toSvg(reactFlowWrapper, {
         backgroundColor: isDark ? '#000000' : '#ffffff',
         width: 1920,
@@ -84,21 +148,22 @@ export default function Toolbar() {
           height: '1080px',
         },
       });
-      
+
       const link = document.createElement('a');
       link.download = 'mindmap-1920x1080.svg';
       link.href = dataUrl;
       link.click();
     } catch (err) {
       console.error('Export failed:', err);
+    } finally {
+      showControlsAfterExport();
     }
   };
 
   const toolbarBg = isDark ? 'bg-[#1C1C1E] border-[#2C2C2E]' : 'bg-white border-gray-200';
   const textColor = isDark ? 'text-white' : 'text-gray-900';
-  const segmentBg = isDark ? 'bg-[#2C2C2E]' : 'bg-gray-100';
-  const segmentActive = isDark ? 'bg-[#3A3A3C] text-white' : 'bg-white text-gray-900 shadow-sm';
-  const segmentInactive = isDark ? 'text-gray-400' : 'text-gray-600';
+  const segmentActive = isDark ? 'bg-[#3A3A3C] text-white' : 'bg-gray-100 text-gray-900';
+  const segmentInactive = isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900';
   const btnBg = isDark ? 'bg-[#2C2C2E] hover:bg-[#3A3A3C] text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-900';
   const iconBtn = isDark ? 'hover:bg-[#2C2C2E] text-gray-400' : 'hover:bg-gray-100 text-gray-600';
 
@@ -110,21 +175,40 @@ export default function Toolbar() {
       </div>
 
       {/* Controls */}
-      <div className="flex items-center gap-3">
-        {/* Theme Toggle */}
-        <div className={`flex items-center rounded-md p-0.5 ${segmentBg}`}>
-          {(['default', 'colorful', 'dark'] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTheme(t)}
-              className={`px-3 py-1 text-xs font-medium rounded transition-all ${
-                theme === t ? segmentActive : segmentInactive
-              }`}
-            >
-              {t.charAt(0).toUpperCase() + t.slice(1)}
-            </button>
-          ))}
-        </div>
+      <div className="flex items-center gap-1">
+        {/* Auto Layout Button */}
+        <button
+          onClick={triggerFitView}
+          className={`px-3 py-1 text-xs font-medium rounded transition-all ${segmentActive}`}
+        >
+          Auto
+        </button>
+
+        {/* Theme Buttons */}
+        <button
+          onClick={() => setTheme('default')}
+          className={`px-3 py-1 text-xs font-medium rounded transition-all ${
+            theme === 'default' ? segmentActive : segmentInactive
+          }`}
+        >
+          Default
+        </button>
+        <button
+          onClick={() => setTheme('colorful')}
+          className={`px-3 py-1 text-xs font-medium rounded transition-all ${
+            theme === 'colorful' ? segmentActive : segmentInactive
+          }`}
+        >
+          Colorful
+        </button>
+        <button
+          onClick={() => setTheme('dark')}
+          className={`px-3 py-1 text-xs font-medium rounded transition-all ${
+            theme === 'dark' ? segmentActive : segmentInactive
+          }`}
+        >
+          Dark
+        </button>
 
         {/* Fullscreen */}
         <button

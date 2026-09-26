@@ -23,6 +23,7 @@ function MindMapInner() {
   const setEdges = useMindMapStore((s) => s.setEdges);
   const storedNodes = useMindMapStore((s) => s.nodes);
   const storedEdges = useMindMapStore((s) => s.edges);
+  const fitViewTrigger = useMindMapStore((s) => s.fitViewTrigger);
   const { fitView } = useReactFlow();
   const isDark = theme === 'dark';
 
@@ -45,6 +46,16 @@ function MindMapInner() {
       });
     }, 100);
   }, [text, isDark, setNodes, setEdges, fitView]);
+
+  // Listen to fitViewTrigger
+  useEffect(() => {
+    if (fitViewTrigger > 0) {
+      fitView({ 
+        padding: 0.15, 
+        duration: 300 
+      });
+    }
+  }, [fitViewTrigger, fitView]);
 
   if (storedNodes.length === 0) {
     return (

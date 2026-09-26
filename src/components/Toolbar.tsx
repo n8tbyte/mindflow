@@ -6,6 +6,7 @@ import { toPng, toSvg } from 'html-to-image';
 export default function Toolbar() {
   const theme = useMindMapStore((s) => s.theme);
   const setTheme = useMindMapStore((s) => s.setTheme);
+  const triggerFitView = useMindMapStore((s) => s.triggerFitView);
   const nodes = useMindMapStore((s) => s.nodes);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -112,6 +113,7 @@ export default function Toolbar() {
       <div className="flex items-center gap-1">
         {/* Auto Layout Button */}
         <button
+          onClick={triggerFitView}
           className={`px-3 py-1 text-xs font-medium rounded transition-all ${segmentActive}`}
         >
           Auto

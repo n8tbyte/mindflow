@@ -47,12 +47,14 @@ interface MindMapState {
   edges: Edge[];
   selectedNodeId: string | null;
   theme: 'default' | 'dark' | 'colorful';
+  fitViewTrigger: number;
   setText: (text: string) => void;
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
   setSelectedNodeId: (id: string | null) => void;
   setTheme: (theme: 'default' | 'dark' | 'colorful') => void;
   updateNodeText: (id: string, text: string) => void;
+  triggerFitView: () => void;
 }
 
 export const useMindMapStore = create<MindMapState>((set, get) => ({
@@ -61,6 +63,7 @@ export const useMindMapStore = create<MindMapState>((set, get) => ({
   edges: [],
   selectedNodeId: null,
   theme: (saved.theme as 'default' | 'dark' | 'colorful') || 'default',
+  fitViewTrigger: 0,
   setText: (text) => {
     set({ text });
     try {
@@ -94,4 +97,5 @@ export const useMindMapStore = create<MindMapState>((set, get) => ({
         n.id === id ? { ...n, data: { ...n.data, label: text } } : n
       ),
     })),
+  triggerFitView: () => set((state) => ({ fitViewTrigger: state.fitViewTrigger + 1 })),
 }));

@@ -111,6 +111,13 @@ export default function Toolbar() {
 
       {/* Controls */}
       <div className="flex items-center gap-3">
+        {/* Auto Layout Button */}
+        <button
+          className={`px-3 py-1 text-xs font-medium rounded transition-all ${segmentActive}`}
+        >
+          Auto
+        </button>
+
         {/* Theme Toggle */}
         <div className={`flex items-center rounded-md p-0.5 ${segmentBg}`}>
           {(['default', 'colorful', 'dark'] as const).map((t) => (

@@ -46,11 +46,26 @@ export default function Toolbar() {
     return () => document.removeEventListener('fullscreenchange', handleFsChange);
   }, []);
 
+  const hideControlsForExport = () => {
+    const controls = document.querySelector('.react-flow__controls') as HTMLElement;
+    const minimap = document.querySelector('.react-flow__minimap') as HTMLElement;
+    if (controls) controls.style.display = 'none';
+    if (minimap) minimap.style.display = 'none';
+  };
+
+  const showControlsAfterExport = () => {
+    const controls = document.querySelector('.react-flow__controls') as HTMLElement;
+    const minimap = document.querySelector('.react-flow__minimap') as HTMLElement;
+    if (controls) controls.style.display = '';
+    if (minimap) minimap.style.display = '';
+  };
+
   const handleExportPNG = async () => {
     const reactFlowWrapper = document.querySelector('.react-flow') as HTMLElement;
     if (!reactFlowWrapper) return;
 
     try {
+      hideControlsForExport();
       const dataUrl = await toPng(reactFlowWrapper, {
         backgroundColor: isDark ? '#000000' : '#ffffff',
         quality: 1.0,
@@ -68,6 +83,8 @@ export default function Toolbar() {
       link.click();
     } catch (err) {
       console.error('Export failed:', err);
+    } finally {
+      showControlsAfterExport();
     }
   };
 
@@ -76,6 +93,7 @@ export default function Toolbar() {
     if (!reactFlowWrapper) return;
 
     try {
+      hideControlsForExport();
       const dataUrl = await toSvg(reactFlowWrapper, {
         backgroundColor: isDark ? '#000000' : '#ffffff',
         width: 1920,
@@ -92,6 +110,8 @@ export default function Toolbar() {
       link.click();
     } catch (err) {
       console.error('Export failed:', err);
+    } finally {
+      showControlsAfterExport();
     }
   };
 

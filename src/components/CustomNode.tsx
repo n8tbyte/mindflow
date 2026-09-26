@@ -91,7 +91,7 @@ function CustomNode({ data, id }: NodeProps) {
       <Handle
         type="target"
         position={Position.Left}
-        className="!w-2 !h-2"
+        className="!w-2 !h-2 !bg-white/50 !border-0"
       />
       {isEditing ? (
         <input
@@ -109,7 +109,7 @@ function CustomNode({ data, id }: NodeProps) {
       <Handle
         type="source"
         position={Position.Right}
-        className="!w-2 !h-2"
+        className="!w-2 !h-2 !bg-white/50 !border-0"
       />
     </div>
   );

@@ -96,9 +96,8 @@ export default function Toolbar() {
 
   const toolbarBg = isDark ? 'bg-[#1C1C1E] border-[#2C2C2E]' : 'bg-white border-gray-200';
   const textColor = isDark ? 'text-white' : 'text-gray-900';
-  const segmentBg = isDark ? 'bg-[#2C2C2E]' : 'bg-gray-100';
-  const segmentActive = isDark ? 'bg-[#3A3A3C] text-white' : 'bg-white text-gray-900 shadow-sm';
-  const segmentInactive = isDark ? 'text-gray-400' : 'text-gray-600';
+  const segmentActive = isDark ? 'bg-[#3A3A3C] text-white' : 'bg-gray-100 text-gray-900';
+  const segmentInactive = isDark ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900';
   const btnBg = isDark ? 'bg-[#2C2C2E] hover:bg-[#3A3A3C] text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-900';
   const iconBtn = isDark ? 'hover:bg-[#2C2C2E] text-gray-400' : 'hover:bg-gray-100 text-gray-600';
 
@@ -110,7 +109,7 @@ export default function Toolbar() {
       </div>
 
       {/* Controls */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1">
         {/* Auto Layout Button */}
         <button
           className={`px-3 py-1 text-xs font-medium rounded transition-all ${segmentActive}`}
@@ -118,20 +117,31 @@ export default function Toolbar() {
           Auto
         </button>
 
-        {/* Theme Toggle */}
-        <div className={`flex items-center rounded-md p-0.5 ${segmentBg}`}>
-          {(['default', 'colorful', 'dark'] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTheme(t)}
-              className={`px-3 py-1 text-xs font-medium rounded transition-all ${
-                theme === t ? segmentActive : segmentInactive
-              }`}
-            >
-              {t.charAt(0).toUpperCase() + t.slice(1)}
-            </button>
-          ))}
-        </div>
+        {/* Theme Buttons */}
+        <button
+          onClick={() => setTheme('default')}
+          className={`px-3 py-1 text-xs font-medium rounded transition-all ${
+            theme === 'default' ? segmentActive : segmentInactive
+          }`}
+        >
+          Default
+        </button>
+        <button
+          onClick={() => setTheme('colorful')}
+          className={`px-3 py-1 text-xs font-medium rounded transition-all ${
+            theme === 'colorful' ? segmentActive : segmentInactive
+          }`}
+        >
+          Colorful
+        </button>
+        <button
+          onClick={() => setTheme('dark')}
+          className={`px-3 py-1 text-xs font-medium rounded transition-all ${
+            theme === 'dark' ? segmentActive : segmentInactive
+          }`}
+        >
+          Dark
+        </button>
 
         {/* Fullscreen */}
         <button

@@ -1,1 +1,46 @@
 @import "tailwindcss";
+
+/* ReactFlow overrides */
+.react-flow__node {
+  cursor: grab;
+}
+
+.react-flow__node:active {
+  cursor: grabbing;
+}
+
+.react-flow__controls button {
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.react-flow__controls button:hover {
+  background-color: #f3f4f6 !important;
+}
+
+.react-flow__minimap {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Custom scrollbar for textarea */
+textarea::-webkit-scrollbar {
+  width: 6px;
+}
+
+textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 3px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
+
+/* Smooth transitions */
+.react-flow__edge-path {
+  transition: stroke 0.2s ease;
+}

@@ -233,8 +233,7 @@ function layoutRadial(node: TreeNode, positions: Map<string, { x: number; y: num
 }
 
 export function parseTextToMindMap(
-  text: string,
-  layout: 'horizontal' | 'auto' = 'horizontal'
+  text: string
 ): { nodes: Node[]; edges: Edge[] } {
   resetCounter();
   const tree = parseTextToTree(text);
@@ -244,14 +243,8 @@ export function parseTextToMindMap(
   const edges: Edge[] = [];
   const positions = new Map<string, { x: number; y: number }>();
 
-  // Auto layout - choose best layout based on tree structure
-  const effectiveLayout = layout === 'auto' ? chooseBestLayout(tree) : layout;
-
-  switch (effectiveLayout) {
-    case 'horizontal':
-      layoutHorizontal(tree, positions);
-      break;
-  }
+  // Always use horizontal layout
+  layoutHorizontal(tree, positions);
 
   flattenTree(tree, nodes, edges, positions);
 

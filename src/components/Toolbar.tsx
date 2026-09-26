@@ -4,8 +4,6 @@ import { Maximize2, Minimize2 } from 'lucide-react';
 import { toPng, toSvg } from 'html-to-image';
 
 export default function Toolbar() {
-  const layout = useMindMapStore((s) => s.layout);
-  const setLayout = useMindMapStore((s) => s.setLayout);
   const theme = useMindMapStore((s) => s.theme);
   const setTheme = useMindMapStore((s) => s.setTheme);
   const nodes = useMindMapStore((s) => s.nodes);
@@ -55,11 +53,16 @@ export default function Toolbar() {
       const dataUrl = await toPng(reactFlowWrapper, {
         backgroundColor: isDark ? '#000000' : '#ffffff',
         quality: 1.0,
-        pixelRatio: 2,
+        width: 1920,
+        height: 1080,
+        style: {
+          width: '1920px',
+          height: '1080px',
+        },
       });
       
       const link = document.createElement('a');
-      link.download = 'mindmap.png';
+      link.download = 'mindmap-1920x1080.png';
       link.href = dataUrl;
       link.click();
     } catch (err) {
@@ -74,10 +77,16 @@ export default function Toolbar() {
     try {
       const dataUrl = await toSvg(reactFlowWrapper, {
         backgroundColor: isDark ? '#000000' : '#ffffff',
+        width: 1920,
+        height: 1080,
+        style: {
+          width: '1920px',
+          height: '1080px',
+        },
       });
       
       const link = document.createElement('a');
-      link.download = 'mindmap.svg';
+      link.download = 'mindmap-1920x1080.svg';
       link.href = dataUrl;
       link.click();
     } catch (err) {
@@ -102,21 +111,6 @@ export default function Toolbar() {
 
       {/* Controls */}
       <div className="flex items-center gap-3">
-        {/* Layout Toggle */}
-        <div className={`flex items-center rounded-md p-0.5 ${segmentBg}`}>
-          {(['auto', 'horizontal'] as const).map((l) => (
-            <button
-              key={l}
-              onClick={() => setLayout(l)}
-              className={`px-3 py-1 text-xs font-medium rounded transition-all ${
-                layout === l ? segmentActive : segmentInactive
-              }`}
-            >
-              {l === 'auto' ? 'Auto' : 'H'}
-            </button>
-          ))}
-        </div>
-
         {/* Theme Toggle */}
         <div className={`flex items-center rounded-md p-0.5 ${segmentBg}`}>
           {(['default', 'colorful', 'dark'] as const).map((t) => (

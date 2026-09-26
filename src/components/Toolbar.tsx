@@ -12,6 +12,8 @@ export default function Toolbar() {
 
   const isDark = theme === 'dark';
 
+  const waitForFitView = () => new Promise(resolve => setTimeout(resolve, 150));
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'f') {
@@ -65,7 +67,10 @@ export default function Toolbar() {
     if (!reactFlowWrapper) return;
 
     try {
+      triggerFitView();
+      await waitForFitView();
       hideControlsForExport();
+      
       const dataUrl = await toPng(reactFlowWrapper, {
         backgroundColor: isDark ? '#000000' : '#ffffff',
         quality: 1.0,
@@ -93,7 +98,10 @@ export default function Toolbar() {
     if (!reactFlowWrapper) return;
 
     try {
+      triggerFitView();
+      await waitForFitView();
       hideControlsForExport();
+      
       const dataUrl = await toSvg(reactFlowWrapper, {
         backgroundColor: isDark ? '#000000' : '#ffffff',
         width: 1920,

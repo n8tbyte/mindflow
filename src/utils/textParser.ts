@@ -234,7 +234,7 @@ function layoutRadial(node: TreeNode, positions: Map<string, { x: number; y: num
 
 export function parseTextToMindMap(
   text: string,
-  layout: 'horizontal' | 'vertical' | 'radial' | 'auto' = 'horizontal'
+  layout: 'horizontal' | 'auto' = 'horizontal'
 ): { nodes: Node[]; edges: Edge[] } {
   resetCounter();
   const tree = parseTextToTree(text);
@@ -251,12 +251,6 @@ export function parseTextToMindMap(
     case 'horizontal':
       layoutHorizontal(tree, positions);
       break;
-    case 'vertical':
-      layoutVertical(tree, positions);
-      break;
-    case 'radial':
-      layoutRadial(tree, positions);
-      break;
   }
 
   flattenTree(tree, nodes, edges, positions);
@@ -265,27 +259,9 @@ export function parseTextToMindMap(
 }
 
 // Auto choose the best layout based on tree structure
-function chooseBestLayout(tree: TreeNode): 'horizontal' | 'vertical' | 'radial' {
-  const totalNodes = countDescendants(tree);
-  const maxDepth = getMaxDepth(tree);
-  const maxBreadth = getMaxBreadth(tree);
-
-  // Small trees with few nodes - use radial for visual appeal
-  if (totalNodes <= 15 && maxBreadth <= 6) {
-    return 'radial';
-  }
-  
-  // Wide trees - use horizontal
-  if (maxBreadth > maxDepth * 2) {
-    return 'horizontal';
-  }
-  
-  // Deep trees - use vertical
-  if (maxDepth > maxBreadth) {
-    return 'vertical';
-  }
-  
-  // Default to horizontal for balanced trees
+function chooseBestLayout(tree: TreeNode): 'horizontal' {
+  // Always use horizontal layout for now
+  // Future: could adjust spacing based on tree structure
   return 'horizontal';
 }
 

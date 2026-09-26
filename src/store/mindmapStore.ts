@@ -46,13 +46,13 @@ interface MindMapState {
   nodes: Node[];
   edges: Edge[];
   selectedNodeId: string | null;
-  layout: 'horizontal' | 'vertical' | 'radial' | 'auto';
+  layout: 'horizontal' | 'auto';
   theme: 'default' | 'dark' | 'colorful';
   setText: (text: string) => void;
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
   setSelectedNodeId: (id: string | null) => void;
-  setLayout: (layout: 'horizontal' | 'vertical' | 'radial' | 'auto') => void;
+  setLayout: (layout: 'horizontal' | 'auto') => void;
   setTheme: (theme: 'default' | 'dark' | 'colorful') => void;
   updateNodeText: (id: string, text: string) => void;
 }
@@ -62,7 +62,7 @@ export const useMindMapStore = create<MindMapState>((set, get) => ({
   nodes: [],
   edges: [],
   selectedNodeId: null,
-  layout: (saved.layout as 'horizontal' | 'vertical' | 'radial' | 'auto') || 'auto',
+  layout: (saved.layout as 'horizontal' | 'auto') || 'auto',
   theme: (saved.theme as 'default' | 'dark' | 'colorful') || 'default',
   setText: (text) => {
     set({ text });

@@ -1,13 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useMindMapStore } from '../store/mindmapStore';
 import {
-  Layout,
-  Palette,
-  Download,
   Brain,
   Maximize2,
   Minimize2,
-  Sparkles,
 } from 'lucide-react';
 import { toPng, toSvg } from 'html-to-image';
 
@@ -112,7 +108,6 @@ export default function Toolbar() {
     ? 'text-gray-400 hover:text-gray-200'
     : 'text-gray-500 hover:text-gray-700';
 
-  const iconColor = isDark ? 'text-gray-400' : 'text-gray-400';
   const dividerColor = isDark ? 'bg-white/10' : 'bg-gray-200';
   const exportBtnBase = isDark
     ? 'bg-[#0A84FF]/20 text-[#0A84FF] hover:bg-[#0A84FF]/30'
@@ -146,8 +141,7 @@ export default function Toolbar() {
       <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end">
         {/* Layout Toggle - iOS Segmented Control style */}
         <div className={`flex items-center rounded-lg p-0.5 ${segmentBg}`}>
-          <Layout className={`w-3.5 h-3.5 ml-1.5 hidden sm:block ${iconColor}`} />
-          {(['auto', 'horizontal', 'vertical', 'radial'] as const).map((l) => (
+          {(['auto', 'horizontal'] as const).map((l) => (
             <button
               key={l}
               onClick={() => setLayout(l)}
@@ -155,19 +149,13 @@ export default function Toolbar() {
                 layout === l ? segmentActive : segmentInactive
               }`}
             >
-              {l === 'auto' && <Sparkles className="w-3 h-3 inline sm:hidden" />}
-              {l === 'auto' && <span className="hidden sm:inline">✨ Auto</span>}
-              {l === 'horizontal' && <span>H</span>}
-              {l === 'vertical' && <span>V</span>}
-              {l === 'radial' && <span>R</span>}
-              {l !== 'auto' && <span className="hidden sm:inline ml-0.5">{l.charAt(0).toUpperCase() + l.slice(1)}</span>}
+              {l === 'auto' ? '✨ Auto' : 'H'}
             </button>
           ))}
         </div>
 
         {/* Theme Toggle */}
         <div className={`flex items-center rounded-lg p-0.5 ${segmentBg}`}>
-          <Palette className={`w-3.5 h-3.5 ml-1.5 hidden sm:block ${iconColor}`} />
           {(['default', 'colorful', 'dark'] as const).map((t) => (
             <button
               key={t}
@@ -200,19 +188,17 @@ export default function Toolbar() {
         <div className="flex items-center gap-1">
           <button
             onClick={handleExportPNG}
-            className={`flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-lg transition-colors ${exportBtnBase}`}
+            className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-colors ${exportBtnBase}`}
             title="Export as PNG (Ctrl+S)"
           >
-            <Download className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">PNG</span>
+            PNG
           </button>
           <button
             onClick={handleExportSVG}
-            className={`flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-lg transition-colors ${exportBtnSvg}`}
+            className={`px-2.5 py-1.5 text-xs font-medium rounded-lg transition-colors ${exportBtnSvg}`}
             title="Export as SVG"
           >
-            <Download className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">SVG</span>
+            SVG
           </button>
         </div>
 

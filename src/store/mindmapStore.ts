@@ -36,7 +36,7 @@ function loadFromStorage(): { text: string; layout: string; theme: string } {
   } catch (e) {
     // ignore
   }
-  return { text: DEFAULT_TEXT, layout: 'horizontal', theme: 'default' };
+  return { text: DEFAULT_TEXT, layout: 'auto', theme: 'default' };
 }
 
 const saved = loadFromStorage();
@@ -46,13 +46,13 @@ interface MindMapState {
   nodes: Node[];
   edges: Edge[];
   selectedNodeId: string | null;
-  layout: 'horizontal' | 'vertical' | 'radial';
+  layout: 'horizontal' | 'vertical' | 'radial' | 'auto';
   theme: 'default' | 'dark' | 'colorful';
   setText: (text: string) => void;
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
   setSelectedNodeId: (id: string | null) => void;
-  setLayout: (layout: 'horizontal' | 'vertical' | 'radial') => void;
+  setLayout: (layout: 'horizontal' | 'vertical' | 'radial' | 'auto') => void;
   setTheme: (theme: 'default' | 'dark' | 'colorful') => void;
   updateNodeText: (id: string, text: string) => void;
 }
@@ -62,7 +62,7 @@ export const useMindMapStore = create<MindMapState>((set, get) => ({
   nodes: [],
   edges: [],
   selectedNodeId: null,
-  layout: (saved.layout as 'horizontal' | 'vertical' | 'radial') || 'horizontal',
+  layout: (saved.layout as 'horizontal' | 'vertical' | 'radial' | 'auto') || 'auto',
   theme: (saved.theme as 'default' | 'dark' | 'colorful') || 'default',
   setText: (text) => {
     set({ text });

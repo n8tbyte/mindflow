@@ -101,7 +101,7 @@ function flattenTree(
       source: node.parentId,
       target: node.id,
       type: 'smoothstep',
-      style: { stroke: '#6366f1', strokeWidth: 2 },
+      style: { strokeWidth: 2 },
     });
   }
 
@@ -234,7 +234,7 @@ function layoutRadial(node: TreeNode, positions: Map<string, { x: number; y: num
 
 export function parseTextToMindMap(
   text: string,
-  layout: 'horizontal' | 'vertical' | 'radial' = 'horizontal'
+  layout: 'horizontal' | 'vertical' | 'radial' | 'auto' = 'horizontal'
 ): { nodes: Node[]; edges: Edge[] } {
   resetCounter();
   const tree = parseTextToTree(text);
@@ -244,7 +244,10 @@ export function parseTextToMindMap(
   const edges: Edge[] = [];
   const positions = new Map<string, { x: number; y: number }>();
 
-  switch (layout) {
+  // Auto layout - choose best layout based on tree structure
+  const effectiveLayout = layout === 'auto' ? chooseBestLayout(tree) : layout;
+
+  switch (effectiveLayout) {
     case 'horizontal':
       layoutHorizontal(tree, positions);
       break;
@@ -259,4 +262,40 @@ export function parseTextToMindMap(
   flattenTree(tree, nodes, edges, positions);
 
   return { nodes, edges };
+}
+
+// Auto choose the best layout based on tree structure
+function chooseBestLayout(tree: TreeNode): 'horizontal' | 'vertical' | 'radial' {
+  const totalNodes = countDescendants(tree);
+  const maxDepth = getMaxDepth(tree);
+  const maxBreadth = getMaxBreadth(tree);
+
+  // Small trees with few nodes - use radial for visual appeal
+  if (totalNodes <= 15 && maxBreadth <= 6) {
+    return 'radial';
+  }
+  
+  // Wide trees - use horizontal
+  if (maxBreadth > maxDepth * 2) {
+    return 'horizontal';
+  }
+  
+  // Deep trees - use vertical
+  if (maxDepth > maxBreadth) {
+    return 'vertical';
+  }
+  
+  // Default to horizontal for balanced trees
+  return 'horizontal';
+}
+
+function getMaxDepth(node: TreeNode): number {
+  if (node.children.length === 0) return 0;
+  return 1 + Math.max(...node.children.map(getMaxDepth));
+}
+
+function getMaxBreadth(node: TreeNode): number {
+  const directChildren = node.children.length;
+  const childBreadths = node.children.map(getMaxBreadth);
+  return Math.max(directChildren, ...childBreadths);
 }

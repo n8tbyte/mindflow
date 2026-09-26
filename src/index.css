@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* iOS-style font stack */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 /* ReactFlow overrides */
 .react-flow__node {
   cursor: grab;
@@ -10,11 +17,11 @@
 }
 
 .react-flow__controls button {
-  border-bottom: 1px solid #e5e7eb !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
 .react-flow__controls button:hover {
-  background-color: #f3f4f6 !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
 .react-flow__minimap {
@@ -43,4 +50,29 @@ textarea::-webkit-scrollbar-thumb:hover {
 /* Smooth transitions */
 .react-flow__edge-path {
   transition: stroke 0.2s ease;
+}
+
+/* iOS-style blur effects */
+@supports (backdrop-filter: blur(20px)) {
+  .backdrop-blur-xl {
+    backdrop-filter: blur(20px);
+  }
+}
+
+/* iOS-style rounded corners */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus styles for accessibility */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #0A84FF;
+  outline-offset: 2px;
 }
